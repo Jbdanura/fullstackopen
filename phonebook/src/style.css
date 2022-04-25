@@ -2,3 +2,20 @@
     margin: 0;
     padding: 0;
 }
+
+.success, .error{
+    padding: 20px;
+    border: 2px solid green;
+    color: green;
+    font-size: 25px;
+    font-weight: bolder;
+    border-radius: 10px;
+    width: 20vw;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.error{
+    border: 2px solid red;
+    color: red;
+}

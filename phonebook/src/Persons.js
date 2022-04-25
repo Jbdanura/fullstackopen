@@ -1,10 +1,15 @@
 import React from 'react'
+import axios from 'axios'
+import { useState } from 'react'
+import { Person } from './Person'
 
 export const Persons = (props) => {
+  const [deleted,setDeleted] = useState("")
+
   return (
-    <ul>{props.persons.map(person => {
+    <ul>{props.persons.map((person) => {
         return person.name.toLowerCase().includes(props.filter) ?
-        <li key={person.name}>{person.name} {person.number}</li> : ""
+        <Person person={person} handleDelete={props.handleDelete} key={person.id}/>: null
       }
     )}
     </ul>
