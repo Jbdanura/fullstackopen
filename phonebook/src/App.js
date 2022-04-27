@@ -12,29 +12,31 @@ const App = () => {
   const [newPhone, setNewPhone] = useState("")
   const [filter, setNewFilter] = useState("")
   const [message,setMessage] = useState()
+  const baseUrl = "/api/persons"
 
-  useEffect(() => {
-    const promise = axios.get("http://localhost:3001/persons")
+  const getPeople = () => {
+    const promise = axios.get(baseUrl)
     promise.then(response => {
       const persons = response.data
       setPersons(persons)
     })
-    
-  })
+  }
+
+  useEffect(() => {
+    getPeople()
+  },[])
 
   const addPerson = (e) => {
     e.preventDefault()
-    const person = persons.filter(p => p.name == newName)[0]
+    const person = persons.find(p => p.name == newName)
     if(person){
       if(person.phone != newPhone){
         if(confirm(person.name + " is already added to the phonebook, replace the old number with a new one?")){
-          axios.put("http://localhost:3001/persons/" + person.id, {name: person.name, number: newPhone}).then(()=>{
-            const newPersons = persons
-            setPersons(newPersons)
+          axios.put(baseUrl + "/" + person.name, {name: person.name, number: newPhone}).then(()=>{
             setNewPhone("")
             setNewName("")
-            
-          })
+            getPeople()
+          }).catch(error=>console.log("errorcito" + error.response))
         } return
       } else {
           alert(person.name + " is already added to the phonebook")
@@ -42,15 +44,17 @@ const App = () => {
       }
     }
     if(newName.length > 0){
-      axios.post("http://localhost:3001/persons", {name: newName, number: newPhone}).then(()=>{
+      axios.post(baseUrl, {name: newName, number: newPhone}).then(()=>{
+        console.log("added!")
         setPersons([...persons, {name: newName, number: newPhone}])
         setNewPhone("")
         setNewName("")
-        setMessage("success")   
+        setMessage("success")  
+        getPeople()
         setTimeout(() => {
-          setMessage(null)
+          setMessage("success")
         }, 3000)
-      })
+      }).catch(error=>setMessage(error.response.data))
     }
 
   }
@@ -67,7 +71,7 @@ const App = () => {
   const handleDelete = (person) => {  
     if (confirm("Delete " + person.name + "?")){
       try{
-        axios.delete("http://localhost:3001/persons/" + person.id).then(()=>{
+        axios.delete(baseUrl + "/" + person.id).then(()=>{
         const newPersons = persons.filter(p => p.id !== person.id)
         setPersons(newPersons)})
       } catch {

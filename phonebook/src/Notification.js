@@ -6,6 +6,6 @@ export const Notification = ({message}) => {
   }else if(message == "success"){  
       return <div className="success">Added succesfully</div>
   } else {
-      return <div className="error">Epic fail</div>
+      return <div className="error">{message.charAt(0).toUpperCase() + message.slice(1)}</div>
   }
 }
