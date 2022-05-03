@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvdGFiZSIsImlkIjoiNjI3MGRiMTI1ODNjYTQwYTdjOGFkNGQ4IiwiaWF0IjoxNjUxNTY0MDY1fQ.TUMxYuYj3Nb9Y3K4QBzP-BFR0J6ALRnXepqN9xvG3O8
+
+{
+    "title":"wee",
+    "author": "boo",
+    "url": "asdas",
+    "likes": 112
+}
