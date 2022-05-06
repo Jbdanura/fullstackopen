@@ -25,4 +25,14 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
-export default {setToken,create, getAll, update }
+const like = (title,likes) => {
+  const request = axios.put(`${baseUrl}/${title}/${likes}`)
+  return request.then(response => response.data)
+}
+
+const remove = (title) => {
+  const request = axios.delete(`${baseUrl}/${title}`)
+  return request.then(response => response)
+}
+
+export default {setToken,create, getAll, update, like, remove}

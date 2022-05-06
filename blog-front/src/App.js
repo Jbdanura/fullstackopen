@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import Blogform from './components/Blogform'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from "./services/login"
 
@@ -10,13 +12,13 @@ const App = () => {
   const [user,setUser] = useState(null)
   const [errorMessage,setErrorMessage] = useState("")
   const [message,setMessage] = useState("")
-  const [title,setTitle] = useState("")
-  const [author,setAuthor] = useState("")
-  const [url,setUrl] = useState("")
+
+  const blogFormRef = useRef()
 
   const getBlogs = ()=>{
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs =>{
       setBlogs( blogs )
+    }
     )  
   }
 
@@ -61,41 +63,35 @@ const App = () => {
     </form>
   }  
 
-  const addNote=(event)=>{
+  const addNote=(event,title,author,url)=>{
     event.preventDefault()
-
-    blogService.create({title,author,url}).then(response=>
-      {setMessage(response)
+    blogFormRef.current.toggleVisibility()
+    if(title != ""){
+      blogService.create({title,author,url}).then(response=>
+        {setMessage(response)
+        setTimeout(()=>{
+          setMessage("")
+        },4000)
+        getBlogs()
+        })
+    } else {
+      setErrorMessage("Empty blog")
       setTimeout(()=>{
-        setMessage("")
+        setErrorMessage("")
       },4000)
+    }
+  }
+
+  const likeBlog = (title,likes) => {
+    blogService.like(title,likes).then(response=>{
       getBlogs()
-      })
-    
+    })
   }
 
   const noteForm = ()=>{
-    return <form onSubmit={addNote}>
-    <label htmlFor="username">Title:</label>
-    <input
-      name="title"
-      value={title}
-      onChange={({target})=>setTitle(target.value)}
-    />
-    <label htmlFor="username">Author:</label>
-    <input
-      name="author"
-      value={author}
-      onChange={({target})=>setAuthor(target.value)}
-    />
-    <label htmlFor="url">Url:</label>
-    <input
-      name="url"
-      value={url}
-      onChange={({target})=>setUrl(target.value)}
-    />
-    <button type="submit">save</button>
-    </form>  
+    return <Togglable ref={blogFormRef}>
+      <Blogform addNote={addNote}></Blogform>
+    </Togglable>
   }
 
   const logout = () =>{
@@ -103,6 +99,9 @@ const App = () => {
     window.localStorage.removeItem("loggedUser")
   }
 
+  const remove = (title) => {
+    blogService.remove(title).then(response=>getBlogs())
+  }
   return (
 
     <div>
@@ -116,7 +115,7 @@ const App = () => {
         {noteForm()}
       </div>}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} like={likeBlog} remove={remove} />
         )}
     </div>
   )

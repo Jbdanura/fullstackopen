@@ -12,7 +12,7 @@ const getTokenFrom = request => {
 }
 
 blogsRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({}).populate("user")
+    const blogs = await Blog.find({}).sort("likes").populate("user")
     response.json(blogs)
   })
   
@@ -29,7 +29,7 @@ blogsRouter.post('/', async(request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: 0,
     user: user._id
   })
 
@@ -51,7 +51,8 @@ blogsRouter.delete("/:title", async(request,response)=>{
 
 blogsRouter.put("/:title/:likes", async(req,res)=>{
   try{
-    const updated = await Blog.updateOne({title:req.params.title},{likes:req.params.likes})
+    const add = parseInt(req.params.likes) + 1
+    const updated = await Blog.updateOne({title:req.params.title},{likes:add})
     res.status(200).json(updated)
   }catch(exception){
     console.log(exception)
