@@ -7,13 +7,13 @@ const Blog = ({blog, like,remove}) => {
 
   return (
       <div className="blog">
-        {blog.title} {blog.author} <button onClick={()=> setVisible(!visible)}>{visible? "hide": "view"}</button>
+        {blog.title} {blog.author} <button id="view-blog" onClick={()=> setVisible(!visible)}>{visible? "hide": "view"}</button>
         <div style={showInfo}>     
           <ul>
             <li>{blog.url}</li>
-            <li>likes {blog.likes === 0 ? "0" : blog.likes} <button onClick={() => like(blog.title, blog.likes)}>like</button></li>
+            <li id="likes">likes {blog.likes === 0 ? "0" : blog.likes} <button id="like-blog" onClick={() => like(blog.title, blog.likes)}>like</button></li>
             <li>{blog.user.username}</li>
-            <button onClick={()=> remove(blog.title)}>remove</button>
+            <button id="remove-blog" onClick={()=> remove(blog.title)}>remove</button>
           </ul>
 
         </div>

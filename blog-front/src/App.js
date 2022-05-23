@@ -56,10 +56,10 @@ const App = () => {
   const loginForm = ()=>{
     return <form onSubmit={handleLogin}>
     <label htmlFor="username">Username</label>
-    <input onChange={(event)=>setUsername(event.target.value)} type="text" value={username} name="username"></input>
+    <input onChange={(event)=>setUsername(event.target.value)} type="text" id="username" value={username} name="username"></input>
     <label htmlFor="password">Password</label>
-    <input onChange={(event)=>setPassword(event.target.value)} type="password" value={password} name="password"></input>
-    <button type="submit">Login</button>
+    <input onChange={(event)=>setPassword(event.target.value)} type="password" id="password" value={password} name="password"></input>
+    <button id="submit-login" type="submit">Login</button>
     </form>
   }  
 
@@ -114,9 +114,9 @@ const App = () => {
         <button onClick={logout}>Logout</button>
         {noteForm()}
       </div>}
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} like={likeBlog} remove={remove} />
-        )}
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} like={likeBlog} remove={remove} />
+          )}
     </div>
   )
 }
