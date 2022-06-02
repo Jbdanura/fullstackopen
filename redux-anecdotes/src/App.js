@@ -1,37 +1,36 @@
 import { useSelector, useDispatch } from 'react-redux'
-import {createAnecdote, voteAnecdote } from './reducers/anecdoteReducer'
+import {createAnecdote, voteAnecdote,initializeAnecdotes } from './reducers/anecdoteReducer'
 import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import { newMessage } from './reducers/notificationReducer'
 import Notification from './components/Notification'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+
 
 const App = () => {
   const anecdotes = useSelector(state => state.anecdotes)
   const [filter, setFilter] = useState("")
   const dispatch = useDispatch()
 
+  useEffect(()=>{
+    dispatch(initializeAnecdotes())
+    dispatch({type:"ORDER"})
+  },[])
+
   const vote = (id) => {
     dispatch(voteAnecdote(id))
     const anecdote = anecdotes.find(anecdote => anecdote.id === id)
-    console.log(anecdote)
-    dispatch(newMessage("you voted " + anecdote.content))
+    dispatch(newMessage("you voted " + anecdote.content, 5000))
     dispatch({type:"ORDER"})
-    setTimeout(()=>{
-      dispatch(newMessage(""))
-    },5000)
-    
   }
 
-  const add = (event) => {
+  const add = async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ""
     dispatch(createAnecdote(content))
-    dispatch(newMessage("you created " + content))
-    setTimeout(()=>{
-      dispatch(newMessage(""))
-    },5000)
+    dispatch(newMessage("you created " + content, 5000))
   }
 
 
