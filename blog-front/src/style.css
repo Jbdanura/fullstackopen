@@ -1,32 +1,32 @@
-
-.error-message, .message{
-    padding:20px;
-    background-color: grey;
-    border: 2px solid red;
-    width: 400px;
-    font-size:20px;
-    color:white; 
-    border-radius:5px;
-    margin:10px 0; 
-    text-align:center;
+.error-message,
+.message {
+  padding: 20px;
+  background-color: grey;
+  border: 2px solid red;
+  width: 400px;
+  font-size: 20px;
+  color: white;
+  border-radius: 5px;
+  margin: 10px 0;
+  text-align: center;
 }
-.message{
-    border: 2px solid green;
-}
-
-ul{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.message {
+  border: 2px solid green;
 }
 
-li{
-    padding: 0;
-    margin: 0;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
-.blog{
-    border: 1px solid black;
-    margin: 10px 0;
-    padding: 5px;
+li {
+  padding: 0;
+  margin: 0;
+}
+
+.blog {
+  border: 1px solid black;
+  margin: 10px 0;
+  padding: 5px;
 }

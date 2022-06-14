@@ -37,7 +37,11 @@ blogsRouter.post('/', async(request, response) => {
   user.blogs = user.blogs.concat(blog._id)
   await user.save()
 
-  response.send(`Successfully created ${body.title} by ${body.author}`)
+  response.send({title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: 0,
+    user: user._id})
 })
 
 blogsRouter.delete("/:title", async(request,response)=>{
