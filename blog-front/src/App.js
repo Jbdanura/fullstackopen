@@ -9,11 +9,16 @@ import { useSelector,useDispatch } from "react-redux";
 import { initializeBlogs, addBlog, likeBlog, removeBlog } from "./reducers/blogReducer";
 import {BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, useLocation} from "react-router-dom"
 import Users from "./components/Users";
+import User from "./components/User";
+import userService from "./services/users"
+import BlogDetail from "./components/BlogDetail";
+import { Form, Button,Alert } from 'react-bootstrap'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [users,setUsers] = useState([])
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const message = useSelector(state => state.message)
@@ -25,6 +30,11 @@ const App = () => {
     dispatch(initializeBlogs())
   };
 
+  const getUsers = async () => {
+      const all = await userService.getAll()
+      return all
+  }
+
   useEffect(() => {
     getBlogs();
     const loggedUser = window.localStorage.loggedUser;
@@ -32,11 +42,17 @@ const App = () => {
       setUser(JSON.parse(window.localStorage.loggedUser));
       blogService.setToken(JSON.parse(window.localStorage.loggedUser).token);
     }
+    getUsers()
+    .then((response)=>{
+        setUsers(response)
+    })
   }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
+      const username = event.target.username.value
+      const password = event.target.password.value
       const user = await loginService.login({ username, password });
       setUser(user);
       blogService.setToken(user.token);
@@ -57,27 +73,23 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <form onSubmit={handleLogin}>
-        <label htmlFor="username">Username</label>
-        <input
-          onChange={(event) => setUsername(event.target.value)}
-          type="text"
-          id="username"
-          value={username}
-          name="username"
-        ></input>
-        <label htmlFor="password">Password</label>
-        <input
-          onChange={(event) => setPassword(event.target.value)}
-          type="password"
-          id="password"
-          value={password}
-          name="password"
-        ></input>
-        <button id="submit-login" type="submit">
-          Login
-        </button>
-      </form>
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
+            type="text"
+            name="username"
+          />
+          <Form.Label>password:</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+          />
+          <Button variant="primary" type="submit">
+            login
+          </Button>
+        </Form.Group>
+      </Form>
     );
   };
 
@@ -122,7 +134,7 @@ const App = () => {
           loginForm()
         ) : noteForm()}
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} like={like} remove={remove} />
+          <Link to={`/blogs/${blog.id}`}><Blog key={blog.id} blog={blog} /></Link>
         ))}
 
       </div>
@@ -130,23 +142,28 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <h2>blogs</h2>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {message && <div className="message">{message}</div>}
+      {message && <Alert variant="success">{message}</Alert>}
 
       <Router>
-        <Link to="/" style={{paddingRight:"10px"}}>Home</Link>
-        <Link to="/users">Users</Link>
-        {user !== null ? (
-            <div>
-              <p>{user.username} logged in</p>
-              <button onClick={logout}>Logout</button>
-            </div>
-            )
-            : null}
+        <div className="nav">
+          <Link to="/">Home</Link>
+          <Link to="/users">Users</Link>
+          {user !== null ? (
+              <div className="login-nav" style={{display:"flex"}}>
+                <p>{user.username} logged in</p>
+                <button onClick={logout}>Logout</button>
+              </div>
+              )
+              : null}
+        </div>
+        
         <Routes>
-          <Route path="/users" element={<Users/>}/>
+          <Route path="/users" element={<Users users={users}/>}/>
+          <Route path="/users/:id" element={<User users={users}/>}/>
+          <Route path="/blogs/:id" element={<BlogDetail blogs={blogs} like={like}/>}/>
           <Route path="/" element={<HomeView/>}/>
         </Routes>
       </Router>

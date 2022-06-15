@@ -30,7 +30,8 @@ blogsRouter.post('/', async(request, response) => {
     author: body.author,
     url: body.url,
     likes: 0,
-    user: user._id
+    user: user._id,
+    comments: []
   })
 
   const savedBlog = await blog.save()
@@ -41,7 +42,9 @@ blogsRouter.post('/', async(request, response) => {
     author: body.author,
     url: body.url,
     likes: 0,
-    user: user._id})
+    user: user._id,
+    comments: [],
+    id: blog._id})
 })
 
 blogsRouter.delete("/:title", async(request,response)=>{
@@ -62,5 +65,23 @@ blogsRouter.put("/:title/:likes", async(req,res)=>{
     console.log(exception)
   }
 })
+
+blogsRouter.post("/:id/comments/:comment",async(req,res)=>{
+  try{
+    const update = await Blog.updateOne({_id:req.params.id}, { $push: { "comments": req.params.comment } })
+    res.status(200).json(update)
+  }catch(exception){
+    console.log(exception)
+  }
+})
+
+blogsRouter.get("/:id/comments/",async(req,res)=>{
+  try{
+      const comments = await Blog.findOne({_id:req.params.id})
+      res.json(comments)
+  } catch(error){
+      res.status(500).send("error retrieving comments")
+  }
+  })
 
 module.exports = blogsRouter
