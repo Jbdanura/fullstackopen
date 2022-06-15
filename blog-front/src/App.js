@@ -7,6 +7,8 @@ import loginService from "./services/login";
 import { newMessage } from "./reducers/notificationReducer";
 import { useSelector,useDispatch } from "react-redux";
 import { initializeBlogs, addBlog, likeBlog, removeBlog } from "./reducers/blogReducer";
+import {BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, useLocation} from "react-router-dom"
+import Users from "./components/Users";
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -112,23 +114,42 @@ const App = () => {
   const remove = (title) => {
     dispatch(removeBlog(title))
   };
+
+  const HomeView = ()=>{
+    return (
+      <div>
+        {user === null ? (
+          loginForm()
+        ) : noteForm()}
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} like={like} remove={remove} />
+        ))}
+
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>blogs</h2>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {message && <div className="message">{message}</div>}
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div>
-          <p>{user.username} logged in</p>
-          <button onClick={logout}>Logout</button>
-          {noteForm()}
-        </div>
-      )}
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} like={like} remove={remove} />
-      ))}
+
+      <Router>
+        <Link to="/" style={{paddingRight:"10px"}}>Home</Link>
+        <Link to="/users">Users</Link>
+        {user !== null ? (
+            <div>
+              <p>{user.username} logged in</p>
+              <button onClick={logout}>Logout</button>
+            </div>
+            )
+            : null}
+        <Routes>
+          <Route path="/users" element={<Users/>}/>
+          <Route path="/" element={<HomeView/>}/>
+        </Routes>
+      </Router>
     </div>
   );
 };

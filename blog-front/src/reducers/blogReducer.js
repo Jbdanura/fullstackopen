@@ -5,7 +5,6 @@ export const initializeBlogs = () => {
     return async dispatch => {
 
         const blogs = await blogService.getAll()
-        console.log("blogs:" + blogs);
         dispatch({
             type: "INITIALIZE",
             blogs
