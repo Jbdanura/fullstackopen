@@ -1,19 +1,21 @@
 import patientEntries from "../patientsData"
-import { NewPatient, Patient } from "../front/src/types"
+import { PublicPatient, Patient } from "../front/src/types"
 import { v1 as uuid } from 'uuid'
 
 const getAll = () : Patient[] => {
-    return patientEntries.map(({id,name, dateOfBirth, gender, occupation})=> ({
+    return patientEntries.map(({id,name, dateOfBirth, gender, occupation,entries,ssn})=> ({
         id,
         name,
         dateOfBirth,
         gender,
         occupation,
+        entries,
+        ssn
     }))
 
 }
 
-const addPatient = (entry: NewPatient) : Patient => {
+const addPatient = (entry: PublicPatient) : Patient => {
     const{name,gender,occupation} = entry;
     if(name.length === 0 || !name){
         throw new Error("Name empty");
@@ -26,6 +28,8 @@ const addPatient = (entry: NewPatient) : Patient => {
     }
     const newPatientEntry = {
         id: uuid(),
+        entries: [],
+        ssn: "",
         ...entry
     }
     patientEntries.push(newPatientEntry);

@@ -7,6 +7,7 @@ import { useStateValue } from "./state";
 import { Patient } from "./types";
 import PatientListPage from "./PatientListPage";
 import { Typography } from "@material-ui/core";
+import PatientDetail from "./components/PatientDetail";
 
 const App = () => {
   const [, dispatch] = useStateValue();
@@ -39,6 +40,7 @@ const App = () => {
           <Divider hidden />
           <Routes>
             <Route path="/" element={<PatientListPage />} />
+            <Route path="/:id" element={<PatientDetail/>}/> 
           </Routes>
         </Container>
       </Router>
