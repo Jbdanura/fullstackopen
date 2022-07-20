@@ -9,12 +9,22 @@ const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const Blog = require('./models/Blog');
 const User = require('./models/User');
+const sequelize = require('sequelize')
 
 app.use(express.json())
 
 app.use("/api/blogs", blogsRouter)
 app.use("/api/users", usersRouter)
 app.use("/api/login", loginRouter)
+
+app.get("/api/authors",async(req,res)=>{
+  const authors = await Blog.findAll({
+    group:["author"],
+    attributes:["author",[sequelize.fn('SUM', sequelize.col('likes')), 'totalLikes'],[sequelize.fn('COUNT', sequelize.col('title')), 'blogs'] ],
+    }
+  )
+  res.json(authors)
+})
 
 const start = async () => {
   await connectToDatabase()

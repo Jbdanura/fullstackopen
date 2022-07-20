@@ -3,10 +3,15 @@ const Blog = require("../models/Blog")
 const jwt = require('jsonwebtoken')
 const { SECRET } = require('../util/config')
 const User = require("../models/User")
+const { Op } = require('sequelize')
 
 router.get("/", async(req,res,next)=>{
+    let where = {}
+    if (req.query.search) {
+        where = {[Op.or]: [{author: req.query.search}, {title: req.query.search}]}
+    }
     try {
-        const blogs = await Blog.findAll({include: {model: User}})
+        const blogs = await Blog.findAll({include: {model: User}, where, order:[["likes","DESC"]]})
         res.json(blogs)
     } catch {
         error=>next(error)
