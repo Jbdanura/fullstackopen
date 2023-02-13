@@ -1,9 +1,0 @@
-POST http://localhost:3001/api/patients
-Content-type: application/json
-
-{
-    "name":"juancho",
-    "dateOfBirth": "",
-    "gender": "male",
-    "occupation":"house cleaner"
-}

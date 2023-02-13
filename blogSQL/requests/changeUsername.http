@@ -1,6 +1,0 @@
-PUT http://localhost:3001/api/users/jotabe
-Content-Type: application/json
-
-{
-    "newUsername": "lorasen"
-}
